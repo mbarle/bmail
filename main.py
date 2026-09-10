@@ -1,82 +1,117 @@
-#!/usr/bin/env python
 import os
-import jinja2
-import webapp2
-from models import Sporocilo
-from google.appengine.api import users
+from datetime import datetime, timezone
+
+from flask import Flask, render_template, request, redirect, session, url_for
+
+app = Flask(
+    __name__,
+    static_folder="assets",
+    static_url_path="/assets"
+)
+
+app.secret_key = os.environ.get("SECRET_KEY", "development-secret-key")
 
 
-
-template_dir = os.path.join(os.path.dirname(__file__), "templates")
-jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir), autoescape=False)
-
-
-class BaseHandler(webapp2.RequestHandler):
-
-    def write(self, *a, **kw):
-        return self.response.out.write(*a, **kw)
-
-    def render_str(self, template, **params):
-        t = jinja_env.get_template(template)
-        return t.render(params)
-
-    def render(self, template, **kw):
-        return self.write(self.render_str(template, **kw))
-
-    def render_template(self, view_filename, params=None):
-        if not params:
-            params = {}
-        template = jinja_env.get_template(view_filename)
-        return self.response.out.write(template.render(params))
+# Temporary in-memory storage.
+# Messages disappear whenever the application restarts.
+sporocila = []
 
 
-class MainHandler(BaseHandler):
-    def get(self):
-        user = users.get_current_user()
+@app.route("/")
+def home():
+    email = session.get("email")
 
-        if user:
-            logiran = True
-            logout_url = users.create_logout_url('/')
-            params = {"logiran": logiran, "logout_url": logout_url, "user": user}
-        else:
-            logiran = False
-            login_url = users.create_login_url('/')
+    if email:
+        user = {
+            "email": email,
+            "nickname": email.split("@")[0]
+        }
 
-            params = {"logiran": logiran, "login_url": login_url, "user": user}
+        return render_template(
+            "hello.html",
+            logiran=True,
+            user=user
+        )
 
-        return self.render_template("hello.html", params=params)
-
-class VnosHandler(BaseHandler): #poslje vnesene podatke v bazo
-    def post(self):
-        sender = self.request.get("Posiljatelj")
-        recipient = self.request.get("Naslovnik")
-        message_ = self.request.get("Message")
-
-        sporocilo = Sporocilo(Posiljatelj = sender, Naslovnik = recipient, Message = message_)
-        sporocilo.put()
-
-        self.write("Sporocilo je bilo uspesno poslano")
-
-class PoslanoHandler(BaseHandler):
-    def get(self):
-        user = users.get_current_user()
-        seznam_poslano = Sporocilo.query(Sporocilo.Posiljatelj == user.email()).fetch()
-        params = {"seznam_poslano": seznam_poslano, "user": user}
-        self.render_template("Poslano.html", params=params)
-
-class PrejetoHandler(BaseHandler):
-    def get(self):
-        user = users.get_current_user()
-        seznam_prejeto = Sporocilo.query(Sporocilo.Naslovnik == user.email()).fetch()
-        params = {"seznam_prejeto": seznam_prejeto, "user": user}
-        self.render_template("Prejeto.html", params=params)
+    return render_template(
+        "hello.html",
+        logiran=False
+    )
 
 
+@app.route("/login", methods=["POST"])
+def login():
+    email = request.form.get("email")
+
+    if email:
+        session["email"] = email
+
+    return redirect(url_for("home"))
 
 
-app = webapp2.WSGIApplication([
-    webapp2.Route('/', MainHandler),
-    webapp2.Route('/vnos', VnosHandler),
-    webapp2.Route('/poslano', PoslanoHandler, name = "poslano"),
-    webapp2.Route('/prejeto', PrejetoHandler, name = "prejeto"),
-], debug=True)
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("home"))
+
+
+@app.route("/vnos", methods=["POST"])
+def vnos():
+    sender = session.get("email")
+
+    if not sender:
+        return redirect(url_for("home"))
+
+    recipient = request.form.get("Naslovnik")
+    message = request.form.get("Message")
+
+    sporocila.append({
+        "Posiljatelj": sender,
+        "Naslovnik": recipient,
+        "Message": message,
+        "nastanek": datetime.now(timezone.utc)
+    })
+
+    return redirect(url_for("poslano"))
+
+
+@app.route("/poslano")
+def poslano():
+    email = session.get("email")
+
+    if not email:
+        return redirect(url_for("home"))
+
+    seznam_poslano = [
+        sporocilo
+        for sporocilo in sporocila
+        if sporocilo["Posiljatelj"] == email
+    ]
+
+    return render_template(
+        "Poslano.html",
+        seznam_poslano=seznam_poslano
+    )
+
+
+@app.route("/prejeto")
+def prejeto():
+    email = session.get("email")
+
+    if not email:
+        return redirect(url_for("home"))
+
+    seznam_prejeto = [
+        sporocilo
+        for sporocilo in sporocila
+        if sporocilo["Naslovnik"] == email
+    ]
+
+    return render_template(
+        "Prejeto.html",
+        seznam_prejeto=seznam_prejeto
+    )
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
