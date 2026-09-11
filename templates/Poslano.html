@@ -1,28 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-    <script>
-	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+{% extends "base.html" %}
 
-	  ga('create', 'UA-103146771-4', 'auto');
-	  ga('send', 'pageview');
-
-	</script>
-</head>
-<body>
-<h1>Seznam poslanih sporocil</h1>
-
-    {% for sporocilo in seznam_poslano %}
-
-        <p>Od: {{ sporocilo.Posiljatelj }}, Za: {{ sporocilo.Naslovnik }}, {{ sporocilo.Message }}</p>
-
-    {% endfor %}
+{% block title %}Poslana sporočila | Bmail{% endblock %}
 
 
-</body>
-</html>
+{% block content %}
+
+<section class="page-heading">
+
+    <p class="eyebrow">
+        Bmail
+    </p>
+
+    <h1>Poslana sporočila</h1>
+
+    <p class="page-intro">
+        Sporočila, ki si jih poslala v trenutni seji.
+    </p>
+
+</section>
+
+
+<section class="message-list">
+
+    {% if seznam_poslano %}
+
+        {% for sporocilo in seznam_poslano %}
+
+        <article class="message-card">
+
+            <div class="message-meta">
+
+                <div>
+                    <span class="meta-label">
+                        Za
+                    </span>
+
+                    <strong>
+                        {{ sporocilo.Naslovnik }}
+                    </strong>
+                </div>
+
+                <time>
+                    {{ sporocilo.nastanek.strftime("%d. %m. %Y, %H:%M") }}
+                </time>
+
+            </div>
+
+
+            <div class="message-body">
+                {{ sporocilo.Message }}
+            </div>
+
+        </article>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <h2>Ni poslanih sporočil</h2>
+
+            <p>
+                V tej seji še nisi poslala nobenega sporočila.
+            </p>
+
+            <a
+                class="button-link"
+                href="{{ url_for('home') }}"
+            >
+                Napiši sporočilo
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}subl p

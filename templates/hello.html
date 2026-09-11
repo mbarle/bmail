@@ -1,71 +1,147 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>Bmail</title>
+{% extends "base.html" %}
 
-    <link rel="stylesheet" href="/assets/css/style.css">
-   
-</head>
-<body>
+{% block title %}Bmail{% endblock %}
+
+
+{% block content %}
 
 {% if logiran %}
 
-    <h1>Pozdravljen, {{ user.nickname }}!</h1>
+<section class="page-heading">
+    <p class="eyebrow">Novo sporočilo</p>
 
-    <p>
-        Pošljite sporočilo z najboljšim sistemom
-        pošiljanja sporočil - B-mailom!
+    <h1>Pozdravljena, {{ user.nickname }}.</h1>
+
+    <p class="page-intro">
+        Napiši in pošlji novo Bmail sporočilo.
     </p>
+</section>
 
-    <form method="post" action="/vnos">
 
-        <p>Pošiljatelj</p>
-        <input
-            name="Posiljatelj"
-            value="{{ user.email }}"
-            readonly
-        >
+<section class="compose-card">
 
-        <p>Prejemnik</p>
-        <input
-            name="Naslovnik"
-            type="email"
-            required
-        >
+    <form method="post" action="{{ url_for('vnos') }}">
 
-        <p>Sporočilo:</p>
-        <textarea name="Message" required></textarea>
+        <div class="form-group">
 
-        <button type="submit">Potrdi</button>
+            <label for="sender">
+                Pošiljatelj
+            </label>
+
+            <input
+                id="sender"
+                name="Posiljatelj"
+                type="email"
+                value="{{ user.email }}"
+                readonly
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="recipient">
+                Prejemnik
+            </label>
+
+            <input
+                id="recipient"
+                name="Naslovnik"
+                type="email"
+                placeholder="ime@example.com"
+                required
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="message">
+                Sporočilo
+            </label>
+
+            <textarea
+                id="message"
+                name="Message"
+                rows="9"
+                placeholder="Napiši sporočilo ..."
+                required
+            ></textarea>
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button type="submit">
+                Pošlji sporočilo
+            </button>
+
+        </div>
 
     </form>
 
-    <p>
-        <a href="/poslano">Poslana sporočila</a>
-        |
-        <a href="/prejeto">Prejeta sporočila</a>
-    </p>
+</section>
 
-    <p><a href="/logout">Odjava</a></p>
 
 {% else %}
 
-    <h1>Hello, anonimna ninja</h1>
+<section class="login-wrapper">
 
-    <p>Prosim, prijavi se:</p>
+    <div class="login-card">
 
-    <form method="post" action="/login">
-        <input
-            type="email"
-            name="email"
-            placeholder="ime@example.com"
-            required
-        >
-        <button type="submit">Login</button>
-    </form>
+        <div class="login-logo">
+            B
+        </div>
+
+        <p class="eyebrow">Bmail</p>
+
+        <h1>Prijava</h1>
+
+        <p class="login-description">
+            Za uporabo aplikacije vnesi svoj e-poštni naslov.
+        </p>
+
+
+        <form method="post" action="{{ url_for('login') }}">
+
+            <div class="form-group">
+
+                <label for="email">
+                    E-poštni naslov
+                </label>
+
+                <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    placeholder="ime@example.com"
+                    required
+                    autofocus
+                >
+
+            </div>
+
+            <button
+                type="submit"
+                class="full-width"
+            >
+                Prijava
+            </button>
+
+        </form>
+
+        <p class="demo-note">
+            Demo aplikacija: prijava uporablja samo e-poštni naslov
+            in ne preverja identitete uporabnika.
+        </p>
+
+    </div>
+
+</section>
 
 {% endif %}
 
-</body>
-</html>
+{% endblock %}

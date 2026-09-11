@@ -1,5 +1,487 @@
+:root {
+    --background: #f5f7fb;
+    --surface: #ffffff;
+
+    --text: #182230;
+    --text-muted: #667085;
+
+    --border: #e4e7ec;
+
+    --primary: #3559e0;
+    --primary-dark: #2947bc;
+    --primary-light: #eef2ff;
+
+    --danger: #b42318;
+
+    --radius: 14px;
+
+    --shadow:
+        0 1px 3px rgba(16, 24, 40, 0.05),
+        0 8px 24px rgba(16, 24, 40, 0.06);
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+
 body {
-    background-color: red;
+    margin: 0;
+
+    background: var(--background);
+    color: var(--text);
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    line-height: 1.5;
+}
+
+
+/* HEADER */
+
+.site-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+
+.header-inner {
+    max-width: 1050px;
+    min-height: 68px;
+
+    margin: 0 auto;
+    padding: 0 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 32px;
+}
+
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    color: var(--text);
+
+    font-size: 19px;
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+
+.brand-mark,
+.login-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--primary);
+    color: white;
+
+    font-weight: 700;
+}
+
+
+.brand-mark {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 9px;
+}
+
+
+.main-nav {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+}
+
+
+.main-nav a {
+    padding: 9px 12px;
+
+    border-radius: 8px;
+
+    color: var(--text-muted);
+
+    font-size: 14px;
+    font-weight: 500;
+
+    text-decoration: none;
+}
+
+
+.main-nav a:hover {
+    background: var(--background);
+    color: var(--text);
+}
+
+
+.main-nav a.active {
+    background: var(--primary-light);
+    color: var(--primary);
+
+    font-weight: 600;
+}
+
+
+.main-nav .logout-link {
+    margin-left: 10px;
+
+    color: var(--danger);
+}
+
+
+/* PAGE */
+
+.page-container {
+    max-width: 800px;
+
+    margin: 0 auto;
+    padding: 64px 24px;
+}
+
+
+.page-heading {
+    margin-bottom: 28px;
+}
+
+
+.eyebrow {
+    margin: 0 0 5px;
+
+    color: var(--primary);
+
+    font-size: 13px;
+    font-weight: 700;
+
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+
+h1 {
+    margin: 0;
+
+    font-size: 32px;
+    line-height: 1.2;
+
+    letter-spacing: -0.025em;
+}
+
+
+.page-intro,
+.login-description {
+    margin: 9px 0 0;
+
+    color: var(--text-muted);
+}
+
+
+/* COMPOSE */
+
+.compose-card,
+.login-card,
+.message-card,
+.empty-state {
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow);
+}
+
+
+.compose-card {
+    padding: 30px;
+}
+
+
+/* FORMS */
+
+.form-group {
+    margin-bottom: 22px;
+}
+
+
+label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+input,
+textarea {
+    display: block;
+
+    width: 100%;
+
+    padding: 12px 14px;
+
+    border: 1px solid #d0d5dd;
+    border-radius: 9px;
+
+    background: white;
+    color: var(--text);
+
+    font: inherit;
+
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+
+textarea {
+    min-height: 190px;
+
+    resize: vertical;
+}
+
+
+input:focus,
+textarea:focus {
+    outline: none;
+
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px rgba(53, 89, 224, 0.12);
+}
+
+
+input[readonly] {
+    background: #f8fafc;
+    color: var(--text-muted);
+}
+
+
+button,
+.button-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 44px;
+
+    padding: 0 18px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: var(--primary);
+    color: white;
+
+    font: inherit;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    cursor: pointer;
+}
+
+
+button:hover,
+.button-link:hover {
+    background: var(--primary-dark);
+}
+
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+.full-width {
+    width: 100%;
+}
+
+
+/* LOGIN */
+
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+
+    padding-top: 40px;
+}
+
+
+.login-card {
+    width: 100%;
+    max-width: 430px;
+
+    padding: 36px;
+}
+
+
+.login-logo {
+    width: 48px;
+    height: 48px;
+
+    margin-bottom: 22px;
+
+    border-radius: 12px;
+
+    font-size: 23px;
+}
+
+
+.login-card h1 {
+    margin-bottom: 7px;
+}
+
+
+.login-card form {
+    margin-top: 28px;
+}
+
+
+.demo-note {
+    margin: 22px 0 0;
+
+    color: var(--text-muted);
+
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+
+/* MESSAGES */
+
+.message-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+
+.message-card {
+    padding: 22px 24px;
+}
+
+
+.message-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding-bottom: 14px;
+    margin-bottom: 15px;
+
+    border-bottom: 1px solid var(--border);
+
+    font-size: 14px;
+}
+
+
+.meta-label {
+    margin-right: 6px;
+
+    color: var(--text-muted);
+}
+
+
+.message-meta time {
+    color: var(--text-muted);
+
+    font-size: 13px;
+
+    white-space: nowrap;
+}
+
+
+.message-body {
+    color: #344054;
+
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+
+.empty-state {
+    padding: 48px 30px;
+
     text-align: center;
-    page-header: blue;
- }
+}
+
+
+.empty-state h2 {
+    margin: 0 0 8px;
+
+    font-size: 20px;
+}
+
+
+.empty-state p {
+    margin: 0 0 22px;
+
+    color: var(--text-muted);
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 760px) {
+
+    .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+
+
+    .main-nav {
+        width: 100%;
+
+        flex-wrap: wrap;
+    }
+
+
+    .main-nav .logout-link {
+        margin-left: 0;
+    }
+
+
+    .page-container {
+        padding-top: 40px;
+    }
+
+
+    .compose-card,
+    .login-card {
+        padding: 22px;
+    }
+
+
+    .message-meta {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 5px;
+    }
+
+}
